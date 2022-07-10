@@ -7,6 +7,10 @@ const mongoose = require('mongoose');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.use(express.json());
+app.use(cookieParser);
+app.use(cors());
+
 const start = async () => {
   try {
     const { DB_USERNAME, DB_PASSWORD } = process.env;
