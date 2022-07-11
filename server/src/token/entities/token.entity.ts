@@ -7,7 +7,7 @@ export class Token extends Document {
   user: Types.ObjectId;
 
   @Prop({ type: String })
-  activationLink: string;
+  refreshToken: string;
 }
 
 export const TokenSchema = SchemaFactory.createForClass(Token);
