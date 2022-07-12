@@ -8,10 +8,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('registration')
-  async registration(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<Response> {
+  async registration(@Req() req: Request, @Res() res: Response) {
     const userDto: CreateUserDto = req.body;
     const userData = await this.userService.registration(userDto);
     res.cookie('refreshToken', userData.refreshToken, {

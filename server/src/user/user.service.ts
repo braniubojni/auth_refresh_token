@@ -20,17 +20,17 @@ export class UserService {
   ) {}
 
   async registration({ email, password }: CreateUserDto): Promise<IRegReturn> {
-    const candidate = await this.userModel.findOne({ email: email }).exec();
+    const candidate = await this.userModel.findOne({ email }).exec();
     if (candidate) {
       throw new HttpException(ALREADY_EXISTS, HttpStatus.NOT_FOUND);
     }
     const hashPass = await bcrypt.hash(password, 3);
     const activationLink = uuid.v4();
-    const user = new this.userModel({
+    const user = await new this.userModel({
       email,
       activationLink,
       password: hashPass,
-    });
+    }).save();
     await this.mailService.sendActivationMail(email, activationLink);
 
     const userDto = new UserDto(user);

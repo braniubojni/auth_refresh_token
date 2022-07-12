@@ -44,10 +44,10 @@ export class TokenService {
       tokenData.refreshToken = refreshToken;
       return await tokenData.save();
     }
-    const token = await new this.tokenModel({
+    const token = new this.tokenModel({
       user: userId,
       refreshToken,
     });
-    return token;
+    return await token.save();
   }
 }
