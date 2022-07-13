@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { TokenModule } from './token/token.module';
 import { MailModule } from './mail/mail.module';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { MailModule } from './mail/mail.module';
     MongooseModule.forRoot(
       process.env.DB_URL || 'mongodb://localhost:27017/test_db',
     ),
+    MailerModule.forRootAsync(),
     UserModule,
     TokenModule,
     MailModule,
