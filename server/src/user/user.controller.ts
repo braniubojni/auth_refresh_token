@@ -20,7 +20,6 @@ export class UserController {
 
   @Post('login')
   login() {
-    console.log('Login worked');
     return this.userService.login();
   }
 

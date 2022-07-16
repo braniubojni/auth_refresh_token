@@ -1,7 +1,23 @@
-import { Injectable } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
+import { MailerService } from '@nestjs-modules/mailer';
+import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class MailService {
-  async sendActivationMail(to: string, link: string): Promise<void> {}
+  constructor(private readonly mailerService: MailerService) {}
+
+  async sendActivationMail(to: string, link: string): Promise<void> {
+    try {
+      await this.mailerService.sendMail({
+        to,
+        subject: `Email confirmation for ${process.env.API_URL}`,
+        template: '../templates/confirmation',
+        context: {
+          name: to,
+          url: link,
+        },
+      });
+    } catch (error) {
+      Logger.error(`Error while sending email ${error.message}`);
+    }
+  }
 }
