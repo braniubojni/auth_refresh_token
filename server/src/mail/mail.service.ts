@@ -1,5 +1,6 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable, Logger } from '@nestjs/common';
+import { join } from 'path';
 
 @Injectable()
 export class MailService {
@@ -10,7 +11,7 @@ export class MailService {
       await this.mailerService.sendMail({
         to,
         subject: `Email confirmation for ${process.env.API_URL}`,
-        template: '../templates/confirmation',
+        template: '../templates/confirmation.hbs',
         context: {
           name: to,
           url: link,

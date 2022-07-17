@@ -5,7 +5,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
-import { ALREADY_EXISTS } from './user.constants';
+import {
+  ALREADY_EXISTS,
+  NOT_EQUAL_PASS,
+  USR_NOT_EXISTS,
+} from './user.constants';
 import { MailService } from 'src/mail/mail.service';
 import { TokenService } from 'src/token/token.service';
 import { UserDto } from './dto/user.dto';
@@ -19,6 +23,25 @@ export class UserService {
     private readonly tokenService: TokenService,
   ) {}
 
+  private async getUser(email: string): Promise<User> {
+    const user = await this.userModel.findOne({ email }).exec();
+    if (!user) {
+      throw new HttpException(USR_NOT_EXISTS, HttpStatus.NOT_FOUND);
+    }
+    return user;
+  }
+
+  private async genTokens(user: User): Promise<IRegReturn> {
+    const userDto = new UserDto(user);
+    const tokens = this.tokenService.generateTokens({ ...userDto });
+    await this.tokenService.saveToken(userDto.id, tokens.refreshToken);
+
+    return {
+      ...tokens,
+      user: userDto,
+    };
+  }
+
   async registration({ email, password }: CreateUserDto): Promise<IRegReturn> {
     const candidate = await this.userModel.findOne({ email }).exec();
     if (candidate) {
@@ -31,22 +54,23 @@ export class UserService {
       activationLink,
       password: hashPass,
     }).save();
+
     await this.mailService.sendActivationMail(
       email,
       `${process.env.API_URL}/api/user/activate/${activationLink}`,
     );
 
-    const userDto = new UserDto(user);
-    const tokens = this.tokenService.generateTokens({ ...userDto });
-    await this.tokenService.saveToken(userDto.id, tokens.refreshToken);
-
-    return {
-      ...tokens,
-      user: userDto,
-    };
+    return await this.genTokens(user);
   }
+
   async login({ email, password }: CreateUserDto) {
-    return 'Test';
+    const user = await this.getUser(email);
+    const isPassEquals = await bcrypt.compare(password, user.password);
+    if (!isPassEquals) {
+      throw new HttpException(NOT_EQUAL_PASS, HttpStatus.FORBIDDEN);
+    }
+
+    return await this.genTokens(user);
   }
   async logout() {
     return 'Test';
