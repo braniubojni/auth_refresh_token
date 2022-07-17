@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { MailModule } from 'src/mail/mail.module';
-import { TokenModule } from 'src/token/token.module';
+import { MailModule } from '../mail/mail.module';
+import { TokenModule } from '../token/token.module';
 import { User, UserSchema } from './entities/user.entity';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';

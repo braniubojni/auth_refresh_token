@@ -10,8 +10,8 @@ import {
   NOT_EQUAL_PASS,
   USR_NOT_EXISTS,
 } from './user.constants';
-import { MailService } from 'src/mail/mail.service';
-import { TokenService } from 'src/token/token.service';
+import { MailService } from '../mail/mail.service';
+import { TokenService } from '../token/token.service';
 import { UserDto } from './dto/user.dto';
 import { IRegReturn } from './user.interface';
 
