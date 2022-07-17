@@ -1,5 +1,14 @@
-import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
-import { Request, Response } from 'express';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Res,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
+import { Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 
@@ -7,9 +16,9 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @UsePipes(ValidationPipe)
   @Post('registration')
-  async registration(@Req() req: Request, @Res() res: Response) {
-    const userDto: CreateUserDto = req.body;
+  async registration(@Body() userDto: CreateUserDto, @Res() res: Response) {
     const userData = await this.userService.registration(userDto);
     res.cookie('refreshToken', userData.refreshToken, {
       maxAge: 2592000000, // 30 day
@@ -19,8 +28,8 @@ export class UserController {
   }
 
   @Post('login')
-  login() {
-    return this.userService.login();
+  async login(@Body() userDto: CreateUserDto) {
+    return this.userService.login(userDto);
   }
 
   @Post('logout')

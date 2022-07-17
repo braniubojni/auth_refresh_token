@@ -45,7 +45,7 @@ export class UserService {
       user: userDto,
     };
   }
-  async login() {
+  async login({ email, password }: CreateUserDto) {
     return 'Test';
   }
   async logout() {
