@@ -72,8 +72,9 @@ export class UserService {
 
     return await this.genTokens(user);
   }
-  async logout() {
-    return 'Test';
+  async logout(refreshToken: string) {
+    const token = await this.tokenService.removeToken(refreshToken);
+    return token;
   }
 
   async activate(activationLink: string): Promise<void> {

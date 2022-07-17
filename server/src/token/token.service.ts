@@ -50,4 +50,11 @@ export class TokenService {
     });
     return await token.save();
   }
+
+  async removeToken(refreshToken: string): Promise<Token> {
+    const tokenData = await this.tokenModel
+      .findOneAndDelete({ refreshToken })
+      .exec();
+    return tokenData;
+  }
 }

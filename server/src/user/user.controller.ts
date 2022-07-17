@@ -4,11 +4,12 @@ import {
   Get,
   Param,
   Post,
+  Req,
   Res,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 
@@ -28,13 +29,22 @@ export class UserController {
   }
 
   @Post('login')
-  async login(@Body() userDto: CreateUserDto) {
-    return this.userService.login(userDto);
+  async login(@Body() userDto: CreateUserDto, @Res() res: Response) {
+    const userData = await this.userService.login(userDto);
+    res.cookie('refreshToken', userData.refreshToken, {
+      maxAge: 2592000000, // 30 day
+      httpOnly: true,
+    });
+    return res.json(userData);
   }
 
   @Post('logout')
-  logout() {
-    return this.userService.logout();
+  logout(@Req() req: Request, @Res() res: Response) {
+    const { refreshToken } = req.cookies;
+    const token = this.userService.logout(refreshToken);
+    res.clearCookie('refreshToken');
+
+    return res.json(token);
   }
 
   @Get('activate/:link')
