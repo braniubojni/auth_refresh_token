@@ -38,10 +38,4 @@ export class UserController {
   refresh() {
     return this.userService.refresh();
   }
-
-  @Get(':id')
-  getUser() {
-    console.log('Get user worked');
-    return this.userService.getUser();
-  }
 }

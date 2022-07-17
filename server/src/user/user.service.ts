@@ -67,7 +67,4 @@ export class UserService {
   async refresh() {
     return 'Test';
   }
-  async getUser() {
-    return 'Test get user';
-  }
 }
