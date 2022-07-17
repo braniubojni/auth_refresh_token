@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req, Res } from '@nestjs/common';
+import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
@@ -29,8 +29,9 @@ export class UserController {
   }
 
   @Get('activate/:link')
-  activate() {
-    return this.userService.activate();
+  async activate(@Param('link') link: string, @Res() res: Response) {
+    await this.userService.activate(link);
+    return res.redirect(process.env.CLIENT_URL);
   }
 
   @Get('refresh')

@@ -51,9 +51,19 @@ export class UserService {
   async logout() {
     return 'Test';
   }
-  async activate() {
-    return 'Test';
+
+  async activate(activationLink: string): Promise<void> {
+    const usr = await this.userModel.findOne({ activationLink }).exec();
+    if (!usr) {
+      throw new HttpException(
+        'Incorrect link for confirmation',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+    usr.isActivated = true;
+    await usr.save();
   }
+
   async refresh() {
     return 'Test';
   }
