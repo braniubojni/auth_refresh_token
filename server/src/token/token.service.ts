@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as jwt from 'jsonwebtoken';
-import { JwtPayload } from 'jsonwebtoken';
 import { Model, Types } from 'mongoose';
 import { UserDto } from 'src/user/dto/user.dto';
 import { Token } from './entities/token.entity';
@@ -50,7 +49,7 @@ export class TokenService {
         process.env.JWT_REFRESH_TOKEN || 'secret_token_456',
       ) as JwtUserData;
     } catch (error) {
-      Logger.error('Access token validate error', error.message);
+      Logger.error('Refresh token validate error => ' + error.message);
       return null;
     }
   }

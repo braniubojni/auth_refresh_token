@@ -6,11 +6,13 @@ import {
   Post,
   Req,
   Res,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
+import { GetUsersGuard } from './guards/get-users.guard';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -62,5 +64,11 @@ export class UserController {
       httpOnly: true,
     });
     return userData;
+  }
+
+  @Get('all')
+  @UseGuards(GetUsersGuard)
+  getAllUsers() {
+    return this.userService.getAllUsers();
   }
 }

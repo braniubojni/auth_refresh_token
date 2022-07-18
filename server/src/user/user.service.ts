@@ -107,4 +107,9 @@ export class UserService {
     const user = await this.userModel.findById(userData._id).exec();
     return await this.genTokens(user);
   }
+
+  async getAllUsers() {
+    const users = await this.userModel.find().exec();
+    return users;
+  }
 }
