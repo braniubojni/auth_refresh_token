@@ -18,7 +18,6 @@ export class GetUsersGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const headerToken = request.headers.authorization;
     const accessToken = headerToken?.split(' ')[1];
-    console.log(accessToken);
     const usrData = this.tokenService.validateAccessToken(accessToken);
     return !!usrData;
   }

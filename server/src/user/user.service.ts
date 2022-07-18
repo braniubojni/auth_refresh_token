@@ -100,11 +100,11 @@ export class UserService {
     }
     const userData = this.tokenService.validateRefreshToken(refreshToken);
     const tokenFromDb = await this.tokenService.getToken(refreshToken);
+    /**If don't pass validation or can't find token in db */
     if (!userData && !tokenFromDb) {
       throw new UnauthorizedException();
     }
-
-    const user = await this.userModel.findById(userData._id).exec();
+    const user = await this.userModel.findById(userData.id).exec();
     return await this.genTokens(user);
   }
 

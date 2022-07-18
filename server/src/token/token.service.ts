@@ -16,7 +16,7 @@ export class TokenService {
     const accessToken = jwt.sign(
       payload,
       process.env.JWT_ACCESS_TOKEN || 'secret_token_123',
-      { expiresIn: '30m' },
+      { expiresIn: '30s' },
     );
     const refreshToken = jwt.sign(
       payload,
@@ -49,7 +49,7 @@ export class TokenService {
         process.env.JWT_REFRESH_TOKEN || 'secret_token_456',
       ) as JwtUserData;
     } catch (error) {
-      Logger.error('Refresh token validate error => ' + error.message);
+      Logger.error('Refresh token validate error => ', error.message);
       return null;
     }
   }
