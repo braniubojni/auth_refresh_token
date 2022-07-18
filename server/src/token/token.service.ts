@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as jwt from 'jsonwebtoken';
+import { JwtPayload } from 'jsonwebtoken';
 import { Model, Types } from 'mongoose';
 import { UserDto } from 'src/user/dto/user.dto';
 import { Token } from './entities/token.entity';
-import { ITokens } from './token.interface';
+import { ITokens, JwtUserData } from './token.interface';
 
 @Injectable()
 export class TokenService {
@@ -28,6 +29,30 @@ export class TokenService {
       accessToken,
       refreshToken,
     };
+  }
+
+  validateAccessToken(token: string): JwtUserData {
+    try {
+      return jwt.verify(
+        token,
+        process.env.JWT_ACCESS_TOKEN || 'secret_token_123',
+      ) as JwtUserData;
+    } catch (error) {
+      Logger.error('Access token validate error', error.message);
+      return null;
+    }
+  }
+
+  validateRefreshToken(token: string): JwtUserData {
+    try {
+      return jwt.verify(
+        token,
+        process.env.JWT_REFRESH_TOKEN || 'secret_token_456',
+      ) as JwtUserData;
+    } catch (error) {
+      Logger.error('Access token validate error', error.message);
+      return null;
+    }
   }
 
   async saveToken(
@@ -56,5 +81,9 @@ export class TokenService {
       .findOneAndDelete({ refreshToken })
       .exec();
     return tokenData;
+  }
+
+  async getToken(refreshToken: string): Promise<Token> {
+    return await this.tokenModel.findOne({ refreshToken }).exec();
   }
 }

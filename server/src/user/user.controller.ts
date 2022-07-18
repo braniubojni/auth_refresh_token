@@ -22,7 +22,7 @@ export class UserController {
   async registration(@Body() userDto: CreateUserDto, @Res() res: Response) {
     const userData = await this.userService.registration(userDto);
     res.cookie('refreshToken', userData.refreshToken, {
-      maxAge: 2592000000, // 30 day
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 day
       httpOnly: true,
     });
     return res.json(userData);
@@ -32,7 +32,7 @@ export class UserController {
   async login(@Body() userDto: CreateUserDto, @Res() res: Response) {
     const userData = await this.userService.login(userDto);
     res.cookie('refreshToken', userData.refreshToken, {
-      maxAge: 2592000000, // 30 day
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 day
       httpOnly: true,
     });
     return res.json(userData);
@@ -54,7 +54,13 @@ export class UserController {
   }
 
   @Get('refresh')
-  refresh() {
-    return this.userService.refresh();
+  async refresh(@Req() req: Request, @Res() res: Response) {
+    const { refreshToken } = req.cookies;
+    const userData = await this.userService.refresh(refreshToken);
+    res.cookie('refreshToken', userData.refreshToken, {
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 day
+      httpOnly: true,
+    });
+    return userData;
   }
 }

@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as uuid from 'uuid';
 import { InjectModel } from '@nestjs/mongoose';
@@ -89,7 +94,17 @@ export class UserService {
     await usr.save();
   }
 
-  async refresh() {
-    return 'Test';
+  async refresh(refreshToken: string): Promise<IRegReturn> {
+    if (!refreshToken) {
+      throw new UnauthorizedException();
+    }
+    const userData = this.tokenService.validateRefreshToken(refreshToken);
+    const tokenFromDb = await this.tokenService.getToken(refreshToken);
+    if (!userData && !tokenFromDb) {
+      throw new UnauthorizedException();
+    }
+
+    const user = await this.userModel.findById(userData._id).exec();
+    return await this.genTokens(user);
   }
 }
