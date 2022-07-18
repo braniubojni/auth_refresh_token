@@ -16,8 +16,10 @@ export class GetUsersGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
-    const { refreshToken } = request.cookies;
-    const usrData = this.tokenService.validateRefreshToken(refreshToken);
+    const headerToken = request.headers.authorization;
+    const accessToken = headerToken?.split(' ')[1];
+    console.log(accessToken);
+    const usrData = this.tokenService.validateAccessToken(accessToken);
     return !!usrData;
   }
 }
