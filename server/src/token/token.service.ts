@@ -16,7 +16,7 @@ export class TokenService {
     const accessToken = jwt.sign(
       payload,
       process.env.JWT_ACCESS_TOKEN || 'secret_token_123',
-      { expiresIn: '30s' },
+      { expiresIn: '30m' },
     );
     const refreshToken = jwt.sign(
       payload,
