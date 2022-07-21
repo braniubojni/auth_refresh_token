@@ -1,6 +1,8 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { makeAutoObservable } from 'mobx';
+import { API_URL } from '../http';
 import { IUser } from '../models/IUser';
+import { AuthResponse } from '../models/response/AuthResponse';
 import AuthService from '../services/AuthService';
 
 export default class Store {
@@ -29,19 +31,21 @@ export default class Store {
       if (axios.isAxiosError(error) && error.response) {
         console.log(error.response?.data);
       }
-      console.log(error as Error);
+      console.log(error);
     }
   }
 
   async registration(email: string, password: string) {
     try {
       const response = await AuthService.registration(email, password);
-      console.log(response);
       localStorage.setItem('token', response.data.accessToken);
       this.setAuth(true);
       this.setUser(response.data.user);
     } catch (error) {
-      console.log(error as Error);
+      if (axios.isAxiosError(error) && error.response) {
+        console.log(error.response?.data);
+      }
+      console.log(error);
     }
   }
 
@@ -55,7 +59,25 @@ export default class Store {
       if (axios.isAxiosError(error) && error.response) {
         console.log(error.response?.data);
       }
-      console.log(error as Error);
+      console.log(error);
+    }
+  }
+
+  async checkAuth() {
+    try {
+      const response = await axios.get<AuthResponse>(
+        `${API_URL}/user/refresh`,
+        {
+          withCredentials: true
+        }
+      );
+      this.setAuth(true);
+      this.setUser(response.data.user);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.log(error.response?.data);
+      }
+      console.log(error);
     }
   }
 }
