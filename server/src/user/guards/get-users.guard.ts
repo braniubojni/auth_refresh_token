@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   Inject,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
@@ -19,6 +20,9 @@ export class GetUsersGuard implements CanActivate {
     const headerToken = request.headers.authorization;
     const accessToken = headerToken?.split(' ')[1];
     const usrData = this.tokenService.validateAccessToken(accessToken);
-    return !!usrData;
+    if (!usrData) {
+      throw new UnauthorizedException();
+    }
+    return true;
   }
 }

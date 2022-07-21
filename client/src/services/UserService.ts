@@ -4,6 +4,6 @@ import { IUser } from '../models/IUser';
 
 export default class AuthService {
   static fetchUsers(): Promise<AxiosResponse<IUser[]>> {
-    return $api.get<IUser[]>('/all');
+    return $api.get<IUser[]>('/user/all');
   }
 }
