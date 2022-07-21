@@ -58,7 +58,6 @@ export class UserController {
   @Get('refresh')
   async refresh(@Req() req: Request, @Res() res: Response) {
     const { refreshToken } = req.cookies;
-    console.log(refreshToken);
     const userData = await this.userService.refresh(refreshToken);
     res.cookie('refreshToken', userData.refreshToken, {
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 day

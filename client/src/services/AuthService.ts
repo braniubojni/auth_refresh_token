@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import $api from '../http/indes';
+import $api from '../http';
 import { AuthResponse } from '../models/response/AuthResponse';
 
 export default class AuthService {
@@ -7,17 +7,17 @@ export default class AuthService {
     email: string,
     password: string
   ): Promise<AxiosResponse<AuthResponse>> {
-    return $api.post('/login', { email, password });
+    return $api.post('/user/login', { email, password });
   }
 
   static async registration(
     email: string,
     password: string
   ): Promise<AxiosResponse<AuthResponse>> {
-    return $api.post('/login', { email, password });
+    return $api.post('/user/registration', { email, password });
   }
 
   static async logout(): Promise<void> {
-    return $api.post('/login');
+    return $api.post('/user/logout');
   }
 }

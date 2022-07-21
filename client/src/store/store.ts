@@ -36,13 +36,11 @@ export default class Store {
   async registration(email: string, password: string) {
     try {
       const response = await AuthService.registration(email, password);
+      console.log(response);
       localStorage.setItem('token', response.data.accessToken);
       this.setAuth(true);
       this.setUser(response.data.user);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        console.log(error.response?.data);
-      }
       console.log(error as Error);
     }
   }
